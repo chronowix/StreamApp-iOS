@@ -1,0 +1,9 @@
+# Xcode
+xcuserdata/
+*.xcworkspace/*
+!*.xcworkspace/contents.xcworkspacedata
+DerivedData/
+.DS_Store
+
+# Secrets
+Constants.swift
