@@ -9,14 +9,14 @@ import Foundation
 
 struct User: Identifiable, Codable{
     let id: UUID
-    var name: String
+    var username: String
     var email: String
     var password: String
     var favoriteMovieIds: [Int]
 
-    init(name: String, email: String, password: String) {
+    init(username: String, email: String, password: String) {
         self.id = UUID()
-        self.name = name
+        self.username = username
         self.email = email
         self.password = password
         self.favoriteMovieIds = []

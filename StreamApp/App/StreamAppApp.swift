@@ -4,29 +4,21 @@
 //
 //  Created by Cours on 04/02/2026.
 //
-
 import SwiftUI
-import SwiftData
 
 @main
 struct StreamAppApp: App {
-    var sharedModelContainer: ModelContainer = {
-        let schema = Schema([
-            Item.self,
-        ])
-        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
-
-        do {
-            return try ModelContainer(for: schema, configurations: [modelConfiguration])
-        } catch {
-            fatalError("Could not create ModelContainer: \(error)")
-        }
-    }()
-
+    
+    // Créer les ViewModels qui seront partagés dans toute l'app
+    @StateObject var authViewModel = AuthViewModel()
+    @StateObject var movieViewModel = MovieViewModel() 
+    
     var body: some Scene {
         WindowGroup {
+            // Point d'entrée de l'app
             ContentView()
+                .environmentObject(authViewModel)
+                .environmentObject(movieViewModel)
         }
-        .modelContainer(sharedModelContainer)
     }
 }
