@@ -29,9 +29,9 @@ struct LoginView: View {
                 .autocapitalization(.none)
                 .keyboardType(.asciiCapable)
             
-            Button(action: {
-                self.authViewModel.login(email: self.email, password: self.password)
-            }) {
+            Button {
+                authViewModel.login(email: email, password: password)
+            } label: {
                 Text("Se connecter")
                     .frame(maxWidth: .infinity)
                     .padding()
@@ -39,6 +39,7 @@ struct LoginView: View {
                     .foregroundColor(.white)
                     .cornerRadius(10)
             }
+
             
             NavigationLink(destination: RegisterView()){
                 Text("Pas de compte ? Inscrivez-vous").font(.caption)

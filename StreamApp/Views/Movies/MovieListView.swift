@@ -28,7 +28,7 @@ struct MovieListView: View {
             } else{
                 //afficher liste films
                 List(movieViewModel.movies) { movie in
-                    NavigationLink(destination: Text("Détail du film")) {
+                    NavigationLink(destination: MovieDetailView(movie: movie)) {
                         MovieRowView(movie: movie)
                     }
                 }

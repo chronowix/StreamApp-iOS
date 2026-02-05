@@ -21,21 +21,15 @@ struct ContentView: View {
                     }
                 
                 // Onglet Favoris (à créer)
-                Text("Favoris")
+                FavoritesView()
                     .tabItem {
                         Label("Favoris", systemImage: "heart.fill")
                     }
                 
-                // Onglet Profil (à créer)
-                VStack {
-                    Text("Profil de \(authViewModel.currentUser?.username ?? "")")
-                    Button("Se déconnecter") {
-                        authViewModel.logout()
+                ProfileView()
+                    .tabItem{
+                        Label("Profil", systemImage: "person.crop.circle")
                     }
-                }
-                .tabItem {
-                    Label("Profil", systemImage: "person.fill")
-                }
             }
         } else {
             // Si non connecté

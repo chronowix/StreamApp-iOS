@@ -21,12 +21,15 @@ class PersistenceService {
         }
     }
     
-    func loadUsers() -> [User]? {
-        guard let data = UserDefaults.standard.data(forKey: usersKey) else { return [] }
+    func loadUsers() -> [User] {
+        guard let data = UserDefaults.standard.data(forKey: usersKey) else {
+            return []
+        }
+
         let decoder = JSONDecoder()
-        let users = try? decoder.decode([User].self, from: data)
-        return users ?? []
+        return (try? decoder.decode([User].self, from: data)) ?? []
     }
+
     
     //sauvegarde de l'utilisateur connecté
     func saveCurrentUser(user: User) {
@@ -38,7 +41,7 @@ class PersistenceService {
     
     //charger l'utilisateur connecté
     func loadCurrentUser() -> User? {
-        guard let data = UserDefaults.standard.data(forKey: currentUserKey) else { return nil } // si perssonne n'est connecté
+        guard let data = UserDefaults.standard.data(forKey: currentUserKey) else { return nil } // si personne n'est connecté
         let decoder = JSONDecoder()
         let user = try? decoder.decode(User.self, from: data)
         return user
@@ -52,94 +55,81 @@ class PersistenceService {
     //création de compte
     func createUser(username: String, email: String, password: String) -> User? {
         var users = loadUsers()
-        
-        //vérification si le mail existe dans la liste des users
-        for user in users ?? [] {
-            if user.email == email {
-                return nil 
-            }
+
+        // vérifier email unique
+        if users.contains(where: { $0.email == email }) {
+            return nil
         }
-        
+
         let newUser = User(username: username, email: email, password: password)
-        users?.append(newUser)
-        saveUsers(users: users ?? [])
+        users.append(newUser)
+
+        saveUsers(users: users)
         saveCurrentUser(user: newUser)
+
         return newUser
-        
     }
+
     
     //connexion de l'utilisateur
     func loginUser(email: String, password: String) -> User? {
         let users = loadUsers()
-        
-        for user in users ?? [] {
-            if user.email == email && user.password == password { // email et mdp correspond
-                saveCurrentUser(user: user)
-                return user
-            } else {
-                return nil
-            }
+
+        if let user = users.first(where: {
+            $0.email == email && $0.password == password
+        }) {
+            saveCurrentUser(user: user)
+            return user
         }
+
         return nil
     }
+
     
     //maj du compte
-    func updateUser(_ updatedUser: User){
+    func updateUser(_ updatedUser: User) {
         var users = loadUsers()
-        
-        //trouver l'utilisateur dans la liste
-        for i in 0..<users!.count {
-            if users![i].email == updatedUser.email {
-                users![i] = updatedUser
-                saveUsers(users: users!)
-                
-                
-                //maj aussi si l'utilisateur est connecté
-                if let currentUser = loadCurrentUser() {
-                    if currentUser.id == updatedUser.id {
-                        saveCurrentUser(user: updatedUser)
-                    }
-                }
-                break
+
+        guard let index = users.firstIndex(where: { $0.id == updatedUser.id }) else {
+            return
+        }
+
+        users[index] = updatedUser
+        saveUsers(users: users)
+        saveCurrentUser(user: updatedUser)
+    }
+
+    func addFavorite(userId: UUID, movieId: Int) {
+        var users = loadUsers()
+
+        guard let index = users.firstIndex(where: { $0.id == userId }) else {
+            return
+        }
+
+        if !users[index].favoriteMovieIds.contains(movieId) {
+            users[index].favoriteMovieIds.append(movieId)
+            saveUsers(users: users)
+
+            if loadCurrentUser()?.id == userId {
+                saveCurrentUser(user: users[index])
             }
         }
     }
-    
-    func addFavorite(userId: UUID, movieId: Int){
-        var users = loadUsers()
-        
-        for i in 0..<users!.count{
-            if users![i].id == userId {
-                //ajouter le film s'il n'est pas dans les favoris
-                if !users![i].favoriteMovieIds.contains(movieId) {
-                    users![i].favoriteMovieIds.append(movieId)
-                    saveUsers(users: users!)
-                    
-                    //maj le user connecté
-                    if let currentUser = loadCurrentUser() {
-                        if currentUser.id == userId {
-                            saveCurrentUser(user: users![i])
-                        }
-                    }
-                }
-                break
-            }
-        }
-    }
+
     
     
     func removeFavorite(userId: UUID, movieId: Int){
         var users = loadUsers()
         
-        for i in 0..<users!.count{
-            if users![i].id == userId {
-                users![i].favoriteMovieIds.removeAll { $0 == movieId }
-                saveUsers(users: users!)
+        for i in 0..<users.count{
+            if users[i].id == userId {
+                users[i].favoriteMovieIds.removeAll { $0 == movieId }
+                saveUsers(users: users)
                 
                 //maj le user connecté
                 if let currentUser = loadCurrentUser() {
                     if currentUser.id == userId {
-                        saveCurrentUser(user: users![i])
+                        saveCurrentUser(user: users[i])
                     }
                 }
                 break
@@ -149,10 +139,10 @@ class PersistenceService {
     
     
     func isFavorite(userId: UUID, movieId: Int) -> Bool {
-        var users = loadUsers()
+        let users = loadUsers()
         
         //cherche le user
-        for user in users ?? [] {
+        for user in users {
             if user.id == userId {
                 return user.favoriteMovieIds.contains(movieId)
             }

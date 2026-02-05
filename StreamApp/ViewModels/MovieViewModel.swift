@@ -11,7 +11,7 @@ internal import Combine
 //viewmodel afin de gérer les films et les favoris
 class MovieViewModel: ObservableObject {
     @Published var movies: [Movie] = []
-    @Published var favoritesMovies: [Movie] = []
+    @Published var favoriteMovies: [Movie] = []
     @Published var isLoading: Bool = false
     @Published var errorMessage: String? = nil
     
@@ -43,7 +43,7 @@ class MovieViewModel: ObservableObject {
     }
     
     
-    func loadFavoritesMovies(for user: User){
+    func loadFavoriteMovies(for user: User){
         isLoading = true
         errorMessage = nil
         
@@ -57,7 +57,7 @@ class MovieViewModel: ObservableObject {
                 }
                 
                 await MainActor.run {
-                    self.favoritesMovies = favoritesMovies
+                    self.favoriteMovies = favoritesMovies
                     self.isLoading = false
                 }
             } catch {
@@ -72,8 +72,14 @@ class MovieViewModel: ObservableObject {
     func addToFavorites(movie: Movie, userId: UUID) {
         PersistenceService.shared.addFavorite(userId: userId, movieId: movie.id)
         
-        if !favoritesMovies.contains(where: { $0.id == movie.id }) {
-            favoritesMovies.append(movie)
+        if !favoriteMovies.contains(where: { $0.id == movie.id }) {
+            favoriteMovies.append(movie)
+        }
+        
+        if let currentUser = PersistenceService.shared.loadCurrentUser() {
+            Task { @MainActor in
+                self.objectWillChange.send()
+            }
         }
     }
     
@@ -81,13 +87,15 @@ class MovieViewModel: ObservableObject {
     func removeFromFavorites(movie: Movie, userId: UUID) {
         PersistenceService.shared.removeFavorite(userId: userId, movieId: movie.id)
         
-        favoritesMovies.removeAll(where: { $0.id == movie.id })
+        favoriteMovies.removeAll(where: { $0.id == movie.id })
+        
+        Task { @MainActor in
+            self.objectWillChange.send()
+        }
     }
     
     
     func isFavorite(movie: Movie, userId: UUID) -> Bool {
         return PersistenceService.shared.isFavorite(userId: userId, movieId: movie.id)
     }
-    
-    
 }

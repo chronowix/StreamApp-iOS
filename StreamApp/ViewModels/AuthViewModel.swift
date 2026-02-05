@@ -72,5 +72,11 @@ class AuthViewModel: ObservableObject {
         isLoggedIn = false
         errorMessage = nil
     }
+    
+    func refreshCurrentUser() {
+        if let user = PersistenceService.shared.loadCurrentUser() {
+            currentUser = user
+        }
+    }
  
 }
