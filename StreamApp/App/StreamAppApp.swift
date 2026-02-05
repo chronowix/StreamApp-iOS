@@ -9,13 +9,13 @@ import SwiftUI
 @main
 struct StreamAppApp: App {
     
-    // Créer les ViewModels qui seront partagés dans toute l'app
+    //ViewModels partagés dans l'appli
     @StateObject var authViewModel = AuthViewModel()
-    @StateObject var movieViewModel = MovieViewModel() 
-    
+    @StateObject var movieViewModel = MovieViewModel()
+        
     var body: some Scene {
         WindowGroup {
-            // Point d'entrée de l'app
+            //Point d'entrée
             ContentView()
                 .environmentObject(authViewModel)
                 .environmentObject(movieViewModel)
