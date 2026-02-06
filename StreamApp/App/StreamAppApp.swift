@@ -12,13 +12,15 @@ struct StreamAppApp: App {
     //ViewModels partagés dans l'appli
     @StateObject var authViewModel = AuthViewModel()
     @StateObject var movieViewModel = MovieViewModel()
-        
+    @StateObject var themeManager = ThemeManager()
+    
     var body: some Scene {
         WindowGroup {
             //Point d'entrée
             ContentView()
                 .environmentObject(authViewModel)
                 .environmentObject(movieViewModel)
+                .preferredColorScheme(themeManager.colorScheme)
         }
     }
 }

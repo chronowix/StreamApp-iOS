@@ -39,6 +39,9 @@ struct FavoritesView: View {
                         }
                     }
                     .navigationTitle("Mes favoris")
+                    .refreshable { //pull to refresh
+                        movieViewModel.loadFavoriteMovies(for: user)
+                    }
                 }
             } else {
                 Text("Vous devez être connecté pour accéder à cette partie")
@@ -46,6 +49,12 @@ struct FavoritesView: View {
         }
         .onAppear {
             //chargement des favs au démarrage
+            if let user = authViewModel.currentUser{
+                movieViewModel.loadFavoriteMovies(for: user)
+            }
+        }
+        //refresh des favoris
+        .onChange(of: authViewModel.currentUser?.favoriteMovieIds.count){
             if let user = authViewModel.currentUser{
                 movieViewModel.loadFavoriteMovies(for: user)
             }
