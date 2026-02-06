@@ -14,6 +14,9 @@ struct ProfileView: View {
     @State private var editedUsername = ""
     @State private var editedEmail = ""
     
+    @AppStorage("selectedTheme") var selectedTheme: String = Theme.system.rawValue
+    
+    
     var body: some View{
         NavigationStack{
             if let user = authViewModel.currentUser{
@@ -51,6 +54,17 @@ struct ProfileView: View {
                             Text("\(user.favoriteMovieIds.count)")
                                 .foregroundColor(.gray)
                         }
+                    }
+                    
+                    
+                    Section("Apparence"){
+                        Picker("Thème", selection: $selectedTheme){
+                            Text("Sombre").tag(Theme.dark.rawValue)
+                            Text("Clair").tag(Theme.light.rawValue)
+                            Text("Système").tag(Theme.system.rawValue)
+                        }
+        
+                        .pickerStyle(.navigationLink)
                     }
                     
                     //actions
