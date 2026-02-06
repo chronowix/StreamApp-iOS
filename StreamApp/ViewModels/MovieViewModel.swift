@@ -14,6 +14,8 @@ class MovieViewModel: ObservableObject {
     @Published var favoriteMovies: [Movie] = []
     @Published var isLoading: Bool = false
     @Published var errorMessage: String? = nil
+    @Published var isSearching: Bool = false
+    @Published var searchResults: [Movie] = []
     
     //Récupération des films populaires via l'api TMDB
     func fetchPopularMovies() {
@@ -43,31 +45,32 @@ class MovieViewModel: ObservableObject {
     }
     
     
-    func loadFavoriteMovies(for user: User){
+    func loadFavoriteMovies(for user: User) {
         isLoading = true
         errorMessage = nil
-        
-        Task{
+
+        Task {
             do {
-                let allMovies = try await TMDBService.shared.fetchPopularMovies()
-                
-                //filtrage des favoris
-                let favoritesMovies = allMovies.filter { movie in
-                    user.favoriteMovieIds.contains(movie.id)
+                var movies: [Movie] = []
+
+                for id in user.favoriteMovieIds {
+                    let movie = try await TMDBService.shared.fetchMovieById(id: id)
+                    movies.append(movie)
                 }
-                
+
                 await MainActor.run {
-                    self.favoriteMovies = favoritesMovies
+                    self.favoriteMovies = movies
                     self.isLoading = false
                 }
             } catch {
                 await MainActor.run {
-                    self.errorMessage = "Impossible de charger les films. Veuillez réessayer plus tard."
+                    self.errorMessage = "Impossible de charger les favoris."
                     self.isLoading = false
                 }
             }
         }
     }
+
     
     func addToFavorites(movie: Movie, userId: UUID) {
         PersistenceService.shared.addFavorite(userId: userId, movieId: movie.id)
@@ -97,5 +100,33 @@ class MovieViewModel: ObservableObject {
     
     func isFavorite(movie: Movie, userId: UUID) -> Bool {
         return PersistenceService.shared.isFavorite(userId: userId, movieId: movie.id)
+    }
+    
+    
+    func searchMovies(query: String){
+        guard !query.trimmingCharacters(in: .whitespaces).isEmpty else {
+            searchResults = []
+            isSearching = false
+            return
+        }
+        
+        isSearching = true
+        errorMessage = nil
+        
+        Task {
+            do {
+                let results = try await TMDBService.shared.searchMovies(
+                    query: query)
+                await MainActor.run {
+                    self.searchResults = results
+                    self.isSearching = false
+                }
+            } catch {
+                await MainActor.run {
+                    self.errorMessage = "Erreur lors de la recherche."
+                    self.isSearching = false
+                }
+            }
+        }
     }
 }
