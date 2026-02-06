@@ -32,7 +32,7 @@ struct FavoritesView: View {
                     }
                     .padding()
                 } else {
-                    //liste des favs
+                    //liste des favoris
                     List(movieViewModel.favoriteMovies){ movie in
                         NavigationLink(destination: MovieDetailView(movie: movie)){
                             MovieRowView(movie: movie)

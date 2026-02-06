@@ -7,11 +7,12 @@
 
 import Foundation
 
-
+// gestion du service de l'API de TMDB
 class TMDBService {
     static let shared = TMDBService()
     private init() {}
     
+    // va chercher les films populaires du moment selon TMDB
     func fetchPopularMovies() async throws -> [Movie] {
         let urlString = "\(Constants.tmdbBaseURL)/movie/popular?api_key=\(Constants.tmdbAPIKey)&language=fr-FR"
         guard let url = URL(string: urlString) else {
@@ -23,6 +24,7 @@ class TMDBService {
         return response.results
     }
     
+    // recherche d'un film
     func searchMovies(query: String) async throws -> [Movie] {
         let urlString = "\(Constants.tmdbBaseURL)/search/movie?api_key=\(Constants.tmdbAPIKey)&language=fr-FR&query=\(query)"
         guard let url = URL(string: urlString) else {
@@ -34,6 +36,7 @@ class TMDBService {
         return response.results
     }
     
+    // cherche le film via son ID
     func fetchMovieById(id: Int) async throws -> Movie {
         let url = URL(string: "https://api.themoviedb.org/3/movie/\(id)?api_key=\(Constants.tmdbAPIKey)&language=fr-FR")!
         let (data, _) = try await URLSession.shared.data(from: url)

@@ -21,16 +21,16 @@ struct ProfileView: View {
         NavigationStack{
             if let user = authViewModel.currentUser{
                 Form{
-                    //section infos user
+                    // section infos utilisateur
                     Section("Informations"){
                         if isEditing{
-                            //edit mode
+                            // edit mode
                             TextField("Username", text: $editedUsername)
                             TextField("Email", text: $editedEmail)
                                 .textInputAutocapitalization(.never)
                                 .keyboardType(.emailAddress)
                         } else {
-                            //read mode
+                            // mode lecture
                             HStack{
                                 Text("Username")
                                 Spacer()
@@ -46,7 +46,7 @@ struct ProfileView: View {
                         }
                     }
                     
-                    //stats
+                    // stats de films favoris
                     Section("Statistiques"){
                         HStack{
                             Text("Films favoris")
@@ -56,7 +56,7 @@ struct ProfileView: View {
                         }
                     }
                     
-                    
+                    // changement de thème de l'appli
                     Section("Apparence"){
                         Picker("Thème", selection: $selectedTheme){
                             Text("Sombre").tag(Theme.dark.rawValue)
@@ -67,7 +67,7 @@ struct ProfileView: View {
                         .pickerStyle(.navigationLink)
                     }
                     
-                    //actions
+                    // actions
                     Section{
                         if isEditing{
                             Button("Enregistrer"){
@@ -80,7 +80,7 @@ struct ProfileView: View {
                             }
                             .foregroundColor(.gray)
                         } else {
-                            //modifier
+                            // modification du profil
                             Button("Modifier le profil"){
                                 startEditing()
                             }
@@ -96,7 +96,7 @@ struct ProfileView: View {
             }
         }
     }
-    
+    // pour éditer le profil
     func startEditing(){
         if let user = authViewModel.currentUser{
             editedUsername = user.username
@@ -105,12 +105,14 @@ struct ProfileView: View {
         }
     }
     
+    // pour annuler l'édition
     func cancelEditing(){
         isEditing = false
         editedEmail = ""
         editedUsername = ""
     }
     
+    // pour sauvegarder les changements
     func saveChanges(){
         guard var user = authViewModel.currentUser else {return}
         

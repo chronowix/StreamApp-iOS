@@ -30,14 +30,14 @@ struct MovieListView: View {
                 }
                 
             } else {
-                // Liste des films
+                // Liste des films (ici films populaires selon TMDB)
                 List(moviesToDisplay) { movie in
                     NavigationLink(destination: MovieDetailView(movie: movie)) {
                         MovieRowView(movie: movie)
                     }
                 }
                 .navigationTitle("Films populaires")
-                .searchable(text: $searchText, prompt: "Rechercher un film")
+                .searchable(text: $searchText, prompt: "Rechercher un film") // barre de recherche
                 .onSubmit(of: .search){
                     movieViewModel.searchMovies(query: searchText)
                 }
@@ -54,7 +54,8 @@ struct MovieListView: View {
             }
         }
     }
-
+    
+    // affiche les films à afficher lors de la recherche
     private var moviesToDisplay: [Movie] {
         if !searchText.isEmpty {
             return movieViewModel.searchResults
@@ -64,7 +65,7 @@ struct MovieListView: View {
         }
     }
 
-// Vue pour afficher un film
+// vue d'affichage d'un film
 struct MovieRowView: View {
 
     let movie: Movie
