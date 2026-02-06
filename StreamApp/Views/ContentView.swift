@@ -14,18 +14,19 @@ struct ContentView: View {
         if authViewModel.isLoggedIn {
             // Si connecté, afficher l'app avec onglets
             TabView {
-                // Onglet Films
+                // Films
                 MovieListView()
                     .tabItem {
                         Label("Films", systemImage: "film")
                     }
                 
-                // Onglet Favoris (à créer)
+                // Favoris
                 FavoritesView()
                     .tabItem {
                         Label("Favoris", systemImage: "heart.fill")
                     }
                 
+                // Profil
                 ProfileView()
                     .tabItem{
                         Label("Profil", systemImage: "person.crop.circle")

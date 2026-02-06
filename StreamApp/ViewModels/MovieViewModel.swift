@@ -8,7 +8,7 @@
 import Foundation
 internal import Combine
 
-//viewmodel afin de gérer les films et les favoris
+// viewmodel afin de gérer les films et les favoris
 class MovieViewModel: ObservableObject {
     @Published var movies: [Movie] = []
     @Published var favoriteMovies: [Movie] = []
@@ -23,19 +23,19 @@ class MovieViewModel: ObservableObject {
         errorMessage = nil
         
         
-        //utilisation de Task en tant que tâche asynchrone pour ne pas bloquer l'interface
+        // utilisation de Task en tant que tâche asynchrone pour ne pas bloquer l'interface
         Task {
             do{
-                //api call
+                // api call
                 let fetchedMovies = try await TMDBService.shared.fetchPopularMovies()
                 
-                //maj sur le thread principal pour SwiftUI
+                // maj sur le thread principal pour SwiftUI
                 await MainActor.run {
                     self.movies = fetchedMovies
                     self.isLoading = false
                 }
             } catch{
-                //si erreur
+                // si erreur
                 await MainActor.run {
                     self.errorMessage = "Impossible de charger les films. Veuillez réessayer plus tard."
                     self.isLoading = false
@@ -44,7 +44,7 @@ class MovieViewModel: ObservableObject {
         }
     }
     
-    
+    // chargement des films favoris
     func loadFavoriteMovies(for user: User) {
         isLoading = true
         errorMessage = nil
@@ -71,7 +71,7 @@ class MovieViewModel: ObservableObject {
         }
     }
 
-    
+    // ajout d'un film en favoris
     func addToFavorites(movie: Movie, userId: UUID) {
         PersistenceService.shared.addFavorite(userId: userId, movieId: movie.id)
         
@@ -86,7 +86,7 @@ class MovieViewModel: ObservableObject {
         }
     }
     
-    
+    // suppression d'un film des favoris
     func removeFromFavorites(movie: Movie, userId: UUID) {
         PersistenceService.shared.removeFavorite(userId: userId, movieId: movie.id)
         
@@ -97,12 +97,12 @@ class MovieViewModel: ObservableObject {
         }
     }
     
-    
+    // vérifie si le film est en favoris
     func isFavorite(movie: Movie, userId: UUID) -> Bool {
         return PersistenceService.shared.isFavorite(userId: userId, movieId: movie.id)
     }
     
-    
+    // recherche de films
     func searchMovies(query: String){
         guard !query.trimmingCharacters(in: .whitespaces).isEmpty else {
             searchResults = []
@@ -117,7 +117,7 @@ class MovieViewModel: ObservableObject {
             do {
                 let results = try await TMDBService.shared.searchMovies(
                     query: query)
-                await MainActor.run {
+                await MainActor.run { // NB: MainActor.run permet au code de s'exécuter sur le thread principal (qui peut maj l'UI)
                     self.searchResults = results
                     self.isSearching = false
                 }

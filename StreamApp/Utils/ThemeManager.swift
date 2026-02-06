@@ -14,7 +14,7 @@ enum Theme: String, CaseIterable {
     case system = "system"
 }
 
-
+// permet de changer le thème de l'appli
 class ThemeManager: ObservableObject {
     @AppStorage("selectedTheme") var selectedTheme: String = Theme.system.rawValue
     
@@ -27,7 +27,7 @@ class ThemeManager: ObservableObject {
         case .dark:
             return .dark
         case .system:
-            return nil //nil va suivre le thème système
+            return nil // nil va suivre le thème système par défaut
         default:
             return nil
         }

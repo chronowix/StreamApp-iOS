@@ -21,6 +21,7 @@ class PersistenceService {
         }
     }
     
+    // charge les utilisateurs de l'appli
     func loadUsers() -> [User] {
         guard let data = UserDefaults.standard.data(forKey: usersKey) else {
             return []
@@ -31,7 +32,7 @@ class PersistenceService {
     }
 
     
-    //sauvegarde de l'utilisateur connecté
+    // sauvegarde de l'utilisateur connecté
     func saveCurrentUser(user: User) {
         let encoder = JSONEncoder()
         if let encoded = try? encoder.encode(user) {
@@ -39,7 +40,7 @@ class PersistenceService {
         }
     }
     
-    //charger l'utilisateur connecté
+    // charger l'utilisateur connecté
     func loadCurrentUser() -> User? {
         guard let data = UserDefaults.standard.data(forKey: currentUserKey) else { return nil } // si personne n'est connecté
         let decoder = JSONDecoder()
@@ -47,12 +48,12 @@ class PersistenceService {
         return user
     }
     
-    //déconnexion
+    // déconnexion
     func logout() {
         UserDefaults.standard.removeObject(forKey: currentUserKey)
     }
     
-    //création de compte
+    // création de compte
     func createUser(username: String, email: String, password: String) -> User? {
         var users = loadUsers()
 
@@ -71,7 +72,7 @@ class PersistenceService {
     }
 
     
-    //connexion de l'utilisateur
+    // connexion de l'utilisateur
     func loginUser(email: String, password: String) -> User? {
         let users = loadUsers()
 
@@ -86,7 +87,7 @@ class PersistenceService {
     }
 
     
-    //maj du compte
+    // maj du compte via l'onglet profil
     func updateUser(_ updatedUser: User) {
         var users = loadUsers()
 
@@ -117,7 +118,7 @@ class PersistenceService {
     }
 
     
-    
+    // suppression du favori de la liste de l'utilisateur connecté
     func removeFavorite(userId: UUID, movieId: Int){
         var users = loadUsers()
         

@@ -39,7 +39,7 @@ struct MovieDetailView: View {
                     }
                     
                     if let user = authViewModel.currentUser {
-                        Button(action: {
+                        Button(action: { // bouton pour ajouter le film aux favoris
                             if movieViewModel.isFavorite(movie: movie, userId: user.id){
                                 movieViewModel.removeFromFavorites(movie: movie, userId: user.id)
                             } else{
