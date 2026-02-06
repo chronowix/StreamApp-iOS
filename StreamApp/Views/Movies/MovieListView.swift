@@ -10,14 +10,17 @@ import SwiftUI
 struct MovieListView: View {
     @EnvironmentObject var movieViewModel: MovieViewModel
     @EnvironmentObject var authViewModel: AuthViewModel
-    
+
+    @State private var searchText = ""
+
     var body: some View {
-        NavigationStack{
+        NavigationStack {
             if movieViewModel.isLoading {
-                //indicateur de chargement
+                // Indicateur de chargement
                 ProgressView("Chargement des films...")
+                
             } else if let errorMessage = movieViewModel.errorMessage {
-                //affichage erreur
+                // Affichage erreur
                 VStack {
                     Text(errorMessage)
                         .foregroundColor(.red)
@@ -25,25 +28,43 @@ struct MovieListView: View {
                         movieViewModel.fetchPopularMovies()
                     }
                 }
-            } else{
-                //afficher liste films
-                List(movieViewModel.movies) { movie in
+                
+            } else {
+                // Liste des films
+                List(moviesToDisplay) { movie in
                     NavigationLink(destination: MovieDetailView(movie: movie)) {
                         MovieRowView(movie: movie)
                     }
                 }
-                .navigationTitle(Text("Films populaires"))
+                .navigationTitle("Films populaires")
+                .searchable(text: $searchText, prompt: "Rechercher un film")
+                .onSubmit(of: .search){
+                    movieViewModel.searchMovies(query: searchText)
+                }
+                .onChange(of: searchText) { _, newValue in
+                    if newValue.isEmpty {
+                        movieViewModel.searchResults = []
+                    }
+                }
             }
         }
-        .onAppear{
+        .onAppear {
             if movieViewModel.movies.isEmpty {
                 movieViewModel.fetchPopularMovies()
             }
         }
     }
-}
 
-//vue pour afficher un film
+    private var moviesToDisplay: [Movie] {
+        if !searchText.isEmpty {
+            return movieViewModel.searchResults
+        } else {
+            return movieViewModel.movies
+            }
+        }
+    }
+
+// Vue pour afficher un film
 struct MovieRowView: View {
 
     let movie: Movie
@@ -82,9 +103,9 @@ struct MovieRowView: View {
         }
     }
 }
-#Preview{
+
+#Preview {
     MovieListView()
         .environmentObject(MovieViewModel())
         .environmentObject(AuthViewModel())
 }
-
