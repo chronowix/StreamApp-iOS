@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		3A02DEA42F35F9B2001650E0 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 3A02DEA32F35F9AC001650E0 /* README.md */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		3A8EC2B62F339BDF0000D144 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -24,6 +28,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		3A02DEA32F35F9AC001650E0 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		3A8EC2A62F339BDE0000D144 /* StreamApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StreamApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3A8EC2B52F339BDF0000D144 /* StreamAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StreamAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3A8EC2BF2F339BDF0000D144 /* StreamAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StreamAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -75,6 +80,7 @@
 		3A8EC29D2F339BDE0000D144 = {
 			isa = PBXGroup;
 			children = (
+				3A02DEA32F35F9AC001650E0 /* README.md */,
 				3A8EC2A82F339BDE0000D144 /* StreamApp */,
 				3A8EC2B82F339BDF0000D144 /* StreamAppTests */,
 				3A8EC2C22F339BDF0000D144 /* StreamAppUITests */,
@@ -212,6 +218,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3A02DEA42F35F9B2001650E0 /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
